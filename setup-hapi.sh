@@ -63,7 +63,11 @@ rc-update add do-init default
 ############################################################################################
 ## Base Packages
 ############################################################################################
-
+apk add haproxy git nano npm certbot wireguard-tools-wg wget
+apk add squashfs-tools
+apk add singularity singularity-bash-completion singularity-doc --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing/
+chmod 755 /bin/sh
+apk add debootstrap
 
 
 

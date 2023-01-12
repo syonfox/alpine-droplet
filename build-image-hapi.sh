@@ -2,7 +2,7 @@
 
 set -o errexit
 
-F=alpine-virt-image-$(date +%Y-%m-%d-%H%M)
+F=alpine-virt-image-hapi-$(date +%Y-%m-%d-%H%M)
 
 if [ "$CI" = "true" ]
 then

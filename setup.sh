@@ -62,7 +62,7 @@ rc-update add do-init default
 ## Base Packages
 ############################################################################################
 
-
+apk add nano less
 
 
 
