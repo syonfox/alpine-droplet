@@ -11,4 +11,5 @@ then
 fi
 
 ./alpine-make-vm-image/alpine-make-vm-image --packages "openssh e2fsprogs-extra" -t --script-chroot --image-format qcow2 -- $F.qcow2 ./setup-hapi.sh
+echo "all done compressing (bzip2 -z)..."
 bzip2 -z $F.qcow2

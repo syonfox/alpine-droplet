@@ -11,4 +11,5 @@ then
 fi
 
 ./alpine-make-vm-image/alpine-make-vm-image --packages "openssh e2fsprogs-extra" --script-chroot --image-format qcow2 $F.qcow2 -- ./setup.sh
+echo "all done compressing (bzip2 -z)..."
 bzip2 -z $F.qcow2
