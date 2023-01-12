@@ -16,6 +16,7 @@ EOF
 
 ln -s networking /etc/init.d/net.lo
 ln -s networking /etc/init.d/net.eth0
+ln -s networking /etc/init.d/net.eth1
 
 rc-update add net.eth0 default
 rc-update add net.lo boot
