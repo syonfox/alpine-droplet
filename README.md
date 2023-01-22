@@ -1,18 +1,36 @@
 # Digital Ocean Alpine Linux Image Generator
 
+Hello welcome to the ENDpoint fork of alpine vm image.
+
+In this repository we have the scripts to build a few of our base images for both digital ocean and xen
+
+In general `build-image*.sh` scripts will actually build an alpine image and zip it.
+
+These scripts run a `setup*.sh` inside the alpine environment allowing dependency installation
+
 
 ## About
 This is a tool to generate an Alpine Linux custom image for Digital Ocean. This ensures that the droplet will correctly configure networking and SSH on first boot using Digital Ocean's metadata service. To use this tool make sure you have `qemu-nbd`, `qemu-img`, `bzip2` and `e2fsprogs` installed. This will not work under the Windows Subsystem for Linux (WSL) as it mounts the image during generation.
 
 ## Usage
+
+To get your **ALPINE LINUX**  image build environment setup run
+```sh
+ash install_alpine_dependancies.sh
+```
+
 This works on alpine:
 ```bash
 git clone https://github.com/syonfox/alpine-droplet.git ;
 cd alpine-droplet/ ;
 git submodule update --init --recursive ;
 #git submodule foreach git pull origin master ## update
-apk add qemu qemu-img qemu-system-x86_64 ;
+
+apk add qemu qemu-img qemu-system-x86_64 e2fsprogs bzip2;
+
+# actualy build an image
 ./build-image.sh ;
+# not this runs setup??? in the alpine image
 ```
 
 Note: Need root permission.
