@@ -16,7 +16,7 @@ This is a tool to generate an Alpine Linux custom image for Digital Ocean. This 
 
 To get your **ALPINE LINUX**  image build environment setup run
 ```sh
-ash install_alpine_dependancies.sh
+ash install_alpine_build_dependancies.sh
 ```
 
 This works on alpine:
