@@ -63,5 +63,6 @@ echo '[MOTD Policy] making executable'
 chmod +x /etc/profile.d/motd.sh ;
 
 echo '[MOTD Policy] running once then printing.'
-./motd.sh ;
+
+. /etc/profile.d/motd.sh ;
 ## cat /etc/motd ; this should be done in the script now. maybe disable ssh motd. so no dups
