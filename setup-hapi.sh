@@ -2,9 +2,11 @@
 
 # Enable openssh server
 rc-update add sshd default
-############################################################################################
-## Networking
-############################################################################################
+
+echo ''
+echo '#`###########################################################################################'
+echo '## Networking  (eth0 dhcp, eth1 dhcp)'
+echo '##############`##############################################################################'
 
 
 # Configure networking
@@ -59,10 +61,10 @@ rc-update add do-init default
 
 
 
-
-############################################################################################
-## Base Packages
-############################################################################################
+echo ''
+echo '############################################################################################'
+echo '## Base Packages'
+echo '############################################################################################'
 apk add haproxy git nano npm certbot wireguard-tools-wg wget
 apk add squashfs-tools
 apk add singularity singularity-bash-completion singularity-doc --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing/
@@ -70,82 +72,83 @@ chmod 755 /bin/sh
 apk add debootstrap
 
 
+echo ''
+echo '############################################################################################'
+echo '## SSH Policy (.policy_ssh.sh)'
+echo '############################################################################################'
+
+. policy_ssh.sh
+
+echo ''
+echo '############################################################################################'
+echo '## Firewall Policy (.policy_firewall.sh)'
+echo '############################################################################################'
+
+. policy_firewall.sh
+
+echo ''
+echo '############################################################################################'
+echo '## MOTO'
+echo '############################################################################################'
 
 
-############################################################################################
-## SSH Policy
-############################################################################################
+echo '#!/bin/sh' > /etc/profile.d/motd.sh ;
+echo 'lastlogins=$(last)' >> /etc/profile.d/motd.sh ;
+#echo 'load=$(uptime)' >> /etc/profile.d/motd.sh ;
+echo 'uptime=$(uptime)' >> /etc/profile.d/motd.sh ;
+echo 'mem=$(free -m)' >> /etc/profile.d/motd.sh ;
+echo 'pkgs=$(apk list -Iv)' >> /etc/profile.d/motd.sh ;
+echo 'procs=$(ps aux)' >> /etc/profile.d/motd.sh ;
+echo 'sshprocs=$(ps aux| grep sshd)' >> /etc/profile.d/motd.sh ;
 
-./policy_ssh.sh
+echo 'date=$(date)' >> /etc/profile.d/motd.sh ;
+echo 'security=$(netstat)' >> /etc/profile.d/motd.sh ;
+echo 'netstat=$(netstat -plntu)' >> /etc/profile.d/motd.sh ;
+#echo 'cpu_load=$(ps -eo pcpu,pid,user,args | sort -k 1 -r | head -6)' >> /etc/profile.d/motd.sh ;
+echo 'num_processes=$(ps -e | wc -l)' >> /etc/profile.d/motd.sh ;
+echo 'cat > /etc/motd << EOD' >> /etc/profile.d/motd.sh ;
 
-############################################################################################
-## Firewall Policy
-############################################################################################
+echo 'Installed Packages:' >> /etc/profile.d/motd.sh ;
+echo '$pkgs' >> /etc/profile.d/motd.sh ;
+echo '' >> /etc/profile.d/motd.sh ;
+#echo 'Critical Security Updates:' >> /etc/profile.d/motd.sh ;
+#echo '$security' >> /etc/profile.d/motd.sh ;
+#echo '' >> /etc/profile.d/motd.sh ;
+echo 'Current Running Processes:' >> /etc/profile.d/motd.sh ;
+echo '$procs' >> /etc/profile.d/motd.sh ;
 
-./policy_firewall.sh
-
-
-############################################################################################
-## MOTO
-############################################################################################
-
-
-echo '#!/bin/sh' > /etc/profile.d/motd.sh
-echo 'lastlogins=$(last)' >> /etc/profile.d/motd.sh
-#echo 'load=$(uptime)' >> /etc/profile.d/motd.sh
-echo 'uptime=$(uptime)' >> /etc/profile.d/motd.sh
-echo 'mem=$(free -m)' >> /etc/profile.d/motd.sh
-echo 'pkgs=$(apk list -Iv)' >> /etc/profile.d/motd.sh
-echo 'procs=$(ps aux)' >> /etc/profile.d/motd.sh
-echo 'sshprocs=$(ps aux| grep sshd)' >> /etc/profile.d/motd.sh
-
-echo 'date=$(date)' >> /etc/profile.d/motd.sh
-echo 'security=$(netstat)' >> /etc/profile.d/motd.sh
-echo 'netstat=$(netstat -plntu)' >> /etc/profile.d/motd.sh
-#echo 'cpu_load=$(ps -eo pcpu,pid,user,args | sort -k 1 -r | head -6)' >> /etc/profile.d/motd.sh
-echo 'num_processes=$(ps -e | wc -l)' >> /etc/profile.d/motd.sh
-echo 'cat > /etc/motd << EOD' >> /etc/profile.d/motd.sh
-
-echo 'Installed Packages:' >> /etc/profile.d/motd.sh
-echo '$pkgs' >> /etc/profile.d/motd.sh
-echo '' >> /etc/profile.d/motd.sh
-#echo 'Critical Security Updates:' >> /etc/profile.d/motd.sh
-#echo '$security' >> /etc/profile.d/motd.sh
-#echo '' >> /etc/profile.d/motd.sh
-echo 'Current Running Processes:' >> /etc/profile.d/motd.sh
-echo '$procs' >> /etc/profile.d/motd.sh
-
-echo 'Welcome to HAPI Alpine host! Above are running processes and installed software' >> /etc/profile.d/motd.sh
-echo '' >> /etc/profile.d/motd.sh
-echo 'Last 4 Logins:' >> /etc/profile.d/motd.sh
-echo '$lastlogins' >> /etc/profile.d/motd.sh
-echo '' >> /etc/profile.d/motd.sh
-echo 'System Load and Disk Usage:' >> /etc/profile.d/motd.sh
-#echo '$load' >> /etc/profile.d/motd.sh
-#echo '' >> /etc/profile.d/motd.sh
-echo 'System Uptime:' >> /etc/profile.d/motd.sh
-echo '$uptime' >> /etc/profile.d/motd.sh
-echo '' >> /etc/profile.d/motd.sh
-echo 'Memory Usage:' >> /etc/profile.d/motd.sh
-echo '$mem' >> /etc/profile.d/motd.sh
-echo '' >> /etc/profile.d/motd.sh
-echo 'Active Netstats:' >> /etc/profile.d/motd.sh
-echo '$security' >> /etc/profile.d/motd.sh
-echo '' >> /etc/profile.d/motd.sh
-echo 'Listening Ports:' >> /etc/profile.d/motd.sh
-echo '$netstat' >> /etc/profile.d/motd.sh
-echo '' >> /etc/profile.d/motd.sh
-#echo 'CPU Load:' >> /etc/profile.d/motd.sh
-#echo '$cpu_load' >> /etc/profile.d/motd.sh
-#echo '' >> /etc/profile.d/motd.sh
-echo 'Number of Running Processes:' >> /etc/profile.d/motd.sh
-echo '$num_processes' >> /etc/profile.d/motd.sh
-echo '' >> /etc/profile.d/motd.sh
-echo 'Information updated on:$date' >> /etc/profile.d/motd.sh
-echo 'EOD' >> /etc/profile.d/motd.sh
+echo 'Welcome to HAPI Alpine host! Above are running processes and installed software' >> /etc/profile.d/motd.sh ;
+echo '' >> /etc/profile.d/motd.sh ;
+echo 'Last 4 Logins:' >> /etc/profile.d/motd.sh ;
+echo '$lastlogins' >> /etc/profile.d/motd.sh ;
+echo '' >> /etc/profile.d/motd.sh ;
+echo 'System Load and Disk Usage:' >> /etc/profile.d/motd.sh ;
+#echo '$load' >> /etc/profile.d/motd.sh ;
+#echo '' >> /etc/profile.d/motd.sh ;
+echo 'System Uptime:' >> /etc/profile.d/motd.sh ;
+echo '$uptime' >> /etc/profile.d/motd.sh ;
+echo '' >> /etc/profile.d/motd.sh ;
+echo 'Memory Usage:' >> /etc/profile.d/motd.sh ;
+echo '$mem' >> /etc/profile.d/motd.sh ;
+echo '' >> /etc/profile.d/motd.sh ;
+echo 'Active Netstats:' >> /etc/profile.d/motd.sh ;
+echo '$security' >> /etc/profile.d/motd.sh ;
+echo '' >> /etc/profile.d/motd.sh ;
+echo 'Listening Ports:' >> /etc/profile.d/motd.sh ;
+echo '$netstat' >> /etc/profile.d/motd.sh ;
+echo '' >> /etc/profile.d/motd.sh ;
+#echo 'CPU Load:' >> /etc/profile.d/motd.sh ;
+#echo '$cpu_load' >> /etc/profile.d/motd.sh ;
+#echo '' >> /etc/profile.d/motd.sh ;
+echo 'Number of Running Processes:' >> /etc/profile.d/motd.sh ;
+echo '$num_processes' >> /etc/profile.d/motd.sh ;
+echo '' >> /etc/profile.d/motd.sh ;
+echo 'Information updated on:$date' >> /etc/profile.d/motd.sh ;
+echo 'EOD' >> /etc/profile.d/motd.sh ;
 
 
 
-chmod +x /etc/profile.d/motd.sh
-./motd.sh
-cat /etc/motd
+chmod +x /etc/profile.d/motd.sh ;
+
+./motd.sh ;
+cat /etc/motd ;
