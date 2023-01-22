@@ -1,0 +1,146 @@
+{
+  "description": "Default awall policy to protect Cloud server",
+  "zone": {
+    "pub_zone": {
+      "iface": "eth0"
+    },
+    "vpc_zone": {
+      "iface": "eth1"
+    },
+    "wg_zone": {
+      "iface": "wg0"
+    }
+  },
+  "service": {
+    "ssh": {
+      "proto": "tcp",
+      "port": 22
+    },
+    "myssh": {
+      "proto": "tcp",
+      "port": 4222
+    },
+    "http": {
+      "proto": "tcp",
+      "port": 80
+    },
+    "https": {
+      "proto": "tcp",
+      "port": 443
+    },
+    "https": {
+      "proto": "tcp",
+      "port": 443
+    },
+    "wg": {
+      "proto": "udp",
+      "port": 51194
+    },
+    "rsyncd": {
+      "proto": "tcp",
+      "port": 873
+    },
+    "pg": {
+      "proto": "tcp",
+      "port": 5432
+    },
+    "dns": {
+      "proto": "udp",
+      "port": 53
+    },
+    "ntp": {
+      "proto": "udp",
+      "port": 123
+    }
+  },
+
+
+  "policy": [
+    {
+      "in": "pub_zone",
+      "out": "_fw",
+      "action": "tarpit"
+    },
+    {
+      "in": "_fw",
+      "out": "pub_zone",
+      "action": "reject"
+    },
+
+
+    {
+      "in": "vpc_zone",
+      "out": "_fw",
+      "action": "drop"
+    },
+    {
+      "in": "_fw",
+      "out": "vpc_zone",
+      "action": "reject"
+    },
+
+
+    {
+      "in": "wg_zone",
+      "out": "_fw",
+      "action": "accept"
+    },
+    {
+      "in": "_fw",
+      "out": "wg_zone",
+      "action": "accept"
+    }
+  ],
+
+
+  "filter": [
+    {
+      "in": "pub_zone",
+      "service": "ping",
+      "action": "accept",
+      "flow-limit": {
+        "count": 10,
+        "interval": 6
+      }
+    },
+    {
+      "in": "pub_zone",
+      "out": "_fw",
+      "service": [ "http",  "https",  "myssh"],
+      "action": "accept"
+    },
+    {
+      "in": "_fw",
+      "out": "pub_zone",
+      "service": [ "dns",  "http",  "https",  "ssh",  "myssh",  "wg",  "ntp",  "ping"],
+      "action": "accept"
+    },
+
+
+
+    {
+      "in": "vpc_zone",
+      "out": "_fw",
+      "service": ["http",  "https",  "ssh",  "myssh",  "rsyncd", "pg",  "wg",  "ntp",  "ping"],
+      "action": "accept"
+    },
+    {
+      "in": "_fw",
+      "out": "vpc_zone",
+      "service": [ "dns",  "http",  "https",  "ssh",  "myssh",  "rsyncd", "pg",  "wg",  "ntp",  "ping"],
+      "action": "accept"
+    }
+  ],
+
+
+  "snat": [
+    {
+      "out": "pub_zone"
+    }
+  ],
+  "clamp-mss": [
+    {
+      "out": "pub_zone"
+    }
+  ]
+}
