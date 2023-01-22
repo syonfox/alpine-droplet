@@ -43,7 +43,11 @@ echo '[Firewall Policy Notes] Note we are not using ipv6 call me when we are at 
 #    NAT rule: A NAT rule is used to define how packets are translated by the firewall as they pass through. NAT rules consist of a type (such as source NAT or destination NAT), source and destination zones, a service, and an IP and port range for the translation.
 #
 # To use awall, you will need to define your zones, services, and rules in the data model, and then use the front-end to edit and activate the changes. The back-end will then translate the data in the model into configuration files that can be read by iptables-restore and ip6tables-restore. You can also use plug-ins to extend the data model and functionality of awall to suit your specific needs.
-echo "[Firewall Policy] Wrinting awall cloudserver"
+echo "[Firewall Policy] Writing awall cloud-server"
+echo "[Firewall Policy]                               (myssh, http, https) -(or tarpit)-> [pub zone] <-(or reject)- (dns, http, https, ssh, myssh, wg, ntp, ping)"
+echo "[Firewall Policy] (http, https, ssh, myssh, wg, ntp, ping ,rsyncd, pg) -(or drop)-> [vpc zone] <-(or reject)- (dns, http, https, ssh, myssh, wg, ntp, ping ,rsyncd, pg)"
+echo "[Firewall Policy]                                                            (accept) -> [wg  zone] <- (accept)"
+
 cat > /etc/awall/optional/cloud-server.json << EOF
 {
   "description": "Default awall policy to protect Cloud server",
@@ -150,27 +154,33 @@ cat > /etc/awall/optional/cloud-server.json << EOF
         "interval": 6
       }
     },
+      {
+      "in": "pub_zone",
+      "out": "_fw",
+      "service": [ "http",  "https",  "myssh"],
+      "action": "accept"
+    },
     {
       "in": "_fw",
       "out": "pub_zone",
       "service": [ "dns",  "http",  "https",  "ssh",  "myssh",  "wg",  "ntp",  "ping"],
       "action": "accept"
     },
+
+
+
     {
-      "in": "pub_zone",
+      "in": "vpc_zone",
       "out": "_fw",
-      "service": [ "http",  "https",  "myssh"],
+      "service": ["http",  "https",  "ssh",  "myssh",  "rsyncd", "pg",  "wg",  "ntp",  "ping"],
       "action": "accept"
-    }
-
-
+    },
     {
       "in": "_fw",
       "out": "vpc_zone",
       "service": [ "dns",  "http",  "https",  "ssh",  "myssh",  "rsyncd", "pg",  "wg",  "ntp",  "ping"],
       "action": "accept"
-    },
-
+    }
   ],
 
 
