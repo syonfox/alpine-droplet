@@ -23,6 +23,13 @@ jobs:
       - name: Build
         run: sudo -E ./build-image.sh
 
+      - name: Build hapi
+        run: sudo -E ./build-image-hapi.sh
+
+      - name: Build xen
+        run: sudo -E ./build-image-xen.sh
+
+
       - uses: actions/upload-artifact@v2
         with:
           name: alpine-virt-image.qcow2.bz2
