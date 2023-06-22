@@ -1,0 +1,21 @@
+name: CI
+on:
+  - pull_request
+  - push
+
+jobs:
+  test:
+    runs-on: alpine-latest
+    steps:
+      - name: Install qemu-utils
+        run: |
+          apk update
+          
+          apk add git qemu qemu-img qemu-system-x86_64 e2fsprogs bzip2 ;
+          git submodule update --init --recursive ;
+          
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        run: |
+          ash build-image-hapi.sh
